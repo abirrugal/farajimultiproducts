@@ -1,0 +1,102 @@
+ {{--
+<header>
+    <div class="collapse bg-dark" id="navbarHeader">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-sm-8 col-md-7 py-sm-4">
+                    <h4 class="text-white pt-2 text-center">Categories</h4>
+                    <hr>
+
+                    <div class="d-flex justify-content-around flex-wrap ">
+
+
+
+
+                        <ul class="list-unstyled">
+                            @foreach ($categories as $category)
+
+                            <li>
+                                <a href="{{$category->slug}}" class="text-white">{{$category->name}}</a>
+
+                            </li>
+                            @endforeach
+
+                        </ul>
+
+
+
+                        <ul class="list-unstyled">
+                            @foreach ($categories as $category)
+                            <li>
+                                <a href="{{$category->slug}}" class="text-white">{{$category->name}}</a>
+
+                            </li>
+                            @endforeach
+
+                        </ul>
+
+
+
+                    </div>
+                </div>
+
+                <div class="col-sm-4 offset-md-1 py-sm-4">
+
+                    <h4 class="text-white pt-2 text-center">User Account</h4>
+                    <hr>
+
+                    <div class="d-flex  flex-wrap">
+                        {{--
+                        <h4 class="text-white">About</h4>
+                        <p class="text-muted">Electro-ecommerce is an ecommerce management platform developing using Laravel.</p>
+
+                        <div>
+
+
+                            <ul class="list-unstyled">
+                                @guest
+
+                                <li><a href="{{route('register')}}" class="text-white">Create an account</a></li>
+                                <li><a href="{{route('login')}}" class="text-white">Login</a></li>
+                                @endguest
+                                <li><a href="{{route('cart.index')}}" class="text-white">Cart</a></li>
+                                @auth
+                                <li><a href="#" class="text-white">My Profile</a></li>
+                                <li>
+                                    <form class="d-inline" action="{{route('logout')}}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn m-0 p-0 text-white">Logout</button>
+
+                                    </form>
+                                </li>
+                                @endauth
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container d-flex justify-content-between">
+            <a href="{{route('frontend.product.index')}}" class="navbar-brand d-flex align-items-center">
+                <strong>{{config('app.name')}}</strong>
+            </a>
+
+            <div class="text-white" id="total_cart_items"> </div>
+
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+</header> --}}
