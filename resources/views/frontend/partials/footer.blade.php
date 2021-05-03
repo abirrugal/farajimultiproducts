@@ -2,12 +2,9 @@
   
 
 
- 
+ <div class="bg-dark text-white text-white p-4 text-center">
+    © Copyright 2018 Electro Abir
+ </div>
 
 
-
-<script src="{{asset('js/main.js')}}"></script>
-<script src="{{asset('js/owl.carousel.min.js')}}"></script>
-<script src="{{asset('js/bootstrap.min.js')}}"></script>
-<script src="{{asset('js/popper.min.js')}}"></script>
     </div>

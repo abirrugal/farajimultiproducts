@@ -88,7 +88,11 @@ class AuthController extends Controller
     //If user verified email then we will send him back to the page where he come from,
 
         $this->successMessage('Logged in success');
-        return redirect()->route('frontend.product.index');
+        if (auth()->user()->role_as === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }else{
+            return redirect()->route('frontend.product.index');
+        }
        
     }
      

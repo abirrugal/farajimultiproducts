@@ -1,0 +1,14 @@
+.carousel {
+    /* background: #2f4357; */
+    position: relative;
+}
+
+.carousel-item {
+    text-align: center;
+    min-height: 280px;
+    /* Prevent carousel from being distorted if for some reason image doesn't load */
+}
+
+.z-index-1000 {
+    z-index: 1000;
+}

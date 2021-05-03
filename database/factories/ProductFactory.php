@@ -28,6 +28,7 @@ class ProductFactory extends Factory
             'title'       => $this->faker->unique()->jobTitle,
             'description' => $this->faker->realText(30),
             'price'       => random_int(100, 1000),
+            'image'       => $this->faker->imageUrl()
 
         ];
     }

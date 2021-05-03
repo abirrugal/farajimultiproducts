@@ -21,7 +21,7 @@ class Controller extends BaseController
         session()->flash('message', $message);
     }
 
-    public function jsonSuccess($message ='' , $data=''){
+    public function jsonSuccess($message ='' , $data=[]){
 
         return json_encode(
             [
@@ -30,4 +30,19 @@ class Controller extends BaseController
                 'data'=>$data 
             ]); 
     }
+
+    public function totalCartQuantityCount(){
+        $data['cart'] = session('cart')? session('cart'):[];
+        $totalProducts = array_sum(array_column($data['cart'],'quantity'));
+        return $totalProducts;
+
+    }
+
+    public function totalCartPriceCount(){
+        $data['cart'] = session('cart')? session('cart'):[];
+        $totalPrice = array_sum(array_column($data['cart'],'total_price'));
+        return $totalPrice;
+
+    }
+
 }

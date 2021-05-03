@@ -14,21 +14,23 @@ use Illuminate\Validation\ValidationException;
 class CartController extends Controller
 {
 
+    
 
-    public function cartCount(Request $request){
+    // public function cartCount(Request $request){
         
         
-        if($request->ajax()){
-  // session()->flush();
-        $data=[];
-        $data['cart'] = session('cart')? session('cart'):[];
-        $totalProducts = 0;
-        $totalProducts = array_sum(array_column($data['cart'],'quantity'));
-        
-        return response()->json(['status'=>'success', 'totalProducts'=>$totalProducts ]);
+    //     if($request->ajax()){
+  
+    //     $data=[];
+    //     $data['cart'] = session('cart')? session('cart'):[];
+    //     $totalProducts = array_sum(array_column($data['cart'],'quantity'));
 
-        }
-            }
+    //     dd($totalProducts);
+        
+    //     return response()->json(['status'=>'success', 'totalProducts'=>$totalProducts ]);
+
+    //     }
+    //         }
 
   
 
@@ -39,15 +41,10 @@ class CartController extends Controller
     public function cartIndex(){
         
 // session()->flush();
-$data=[];
-$data['cart'] = session('cart')? session('cart'):[];
-$data['totalPrice'] = array_sum(array_column($data['cart'],'total_price'));
-$data['totalProducts'] = array_sum(array_column($data['cart'],'quantity'));
 
+$data['totalPrice'] = $this->totalCartPriceCount();
+$data['totalProducts'] = $this->totalCartQuantityCount();
 
-// session()->put('cart', $data['total']);
-
-// dd(session('cart'));
 
         return view('frontend.cart.index', $data);
     }
@@ -58,21 +55,26 @@ $data['totalProducts'] = array_sum(array_column($data['cart'],'quantity'));
     // =========================
 
     public function cartStore(Request $request){
+
+        
    
     try{
 
         $this->validate($request, [
             'product_id' => 'required|numeric',
+            
+            
         ]);
 
     }catch(ValidationException $e){
        
         return redirect()->back();
     }
+    
 
     $product = Product::findOrFail($request->product_id);
     $price=($product->sale_price !== null && $product->sale_price >0) ? $product->sale_price : $product->price;
-    $image = $product->getFirstMediaUrl();
+    $image = asset('allfiles/products_image').'/'.$product->image;
 
 
 
@@ -85,6 +87,17 @@ $cart = session()->get('cart');
 
 if(!$cart) {
     
+    if (isset($request->quantity_show)) {
+        
+         $cart[$product->id] = [
+        'title' => $product->title,
+        'quantity' => $request->quantity_show,
+        'image'   => $image,
+        'price' => $price, 
+        'total_price' => $price, 
+        
+    ];
+    }else{
 
     $cart[$product->id] = [
         'title' => $product->title,
@@ -94,16 +107,17 @@ if(!$cart) {
         'total_price' => $price  
         
     ];
-
+    }
     
-
     session(['cart' => $cart]);
+  
+    $totalProducts = $this->totalCartQuantityCount();
 
 //Here we return user to cart index page, We use return keyword So it will stop here and not go secound if statement.[return to cart list]
 
     // return redirect()->back()->with('success','Item added to cart');
 
-    return response()->json(['status'=>'success', 'message'=>'Items added to the cart']);
+    return response()->json(['status'=>'success', 'message'=>'Items added to the cart' ,'data'=>$totalProducts]);
 
 }
 
@@ -113,16 +127,24 @@ if(!$cart) {
 
     if(isset($cart[$product->id])) {
 
-        $cart[$product->id]['quantity']++;
+        if (isset($request->quantity_show)) {
+            $cart[$product->id]['quantity']+= $request->quantity_show;
 
+            $cart[$product->id]['total_price'] = $cart[$product->id]['quantity'] * $cart[$product->id]['price'];
+        }else{
+
+        $cart[$product->id]['quantity']++;
         $cart[$product->id]['total_price'] = $cart[$product->id]['quantity'] * $cart[$product->id]['price'];
 
-
+        }
 
         session(['cart' => $cart]);
 
-        
-       return response()->json(['status'=>'success', 'message'=>'Items added to the cart']);
+        $totalProducts = $this->totalCartQuantityCount();
+
+        return response()->json(['status'=>'success', 'message'=>'Items added to the cart' ,'data'=>$totalProducts]);
+
+    //    return response()->json(['status'=>'success', 'message'=>'Items added to the cart']);
 
    
 //Here we return user to cart index page, We use return keyword So it will stop here and not go secound if statement.[return to cart list]
@@ -132,18 +154,34 @@ if(!$cart) {
 
 //If cart is not empty and cart has duplicate product we well add a new product. [mean there is a single product and also duplicate product]
 
-    $cart[$product->id ] = [
-        'title' => $product->title,
-        'quantity' => 1,
-        'image'   => $image,
-        'price' => $price,  
-        'total_price' => $price,  
-    ];
+if (isset($request->quantity_show)) {
+        
+    $cart[$product->id] = [
+   'title' => $product->title,
+   'quantity' => $request->quantity_show,
+   'image'   => $image,
+   'price' => $price, 
+   'total_price' => $price  
+   
+];
+}else{
+
+$cart[$product->id] = [
+   'title' => $product->title,
+   'quantity' => 1,
+   'image'   => $image,
+   'price' => $price, 
+   'total_price' => $price  
+   
+];
+}
 
     session(['cart' => $cart]);
     
 
-     return response()->json(['status'=>'success', 'message'=>'Items added to the cart']);
+    $totalProducts = $this->totalCartQuantityCount();
+
+        return response()->json(['status'=>'success', 'message'=>'Items added to the cart' ,'data'=>$totalProducts]);
 
 
 //Here we return user to cart index page, We use return keyword So it will stop here and not go secound if statement.[return to cart list]     
@@ -155,8 +193,13 @@ if(!$cart) {
     // =Change items quantity =
     // =========================
 
-    public function changeQty(Request $request, Product $product){
+    public function changeQty(Request $request){
+
+        $id = $request->id;
+        $product = Product::findOrFail($id)->find($id);
+
         $cart = session()->get('cart');
+
 
       if ($request->change_to === 'down') {
           if(isset($cart[$product->id])) {
@@ -167,7 +210,13 @@ if(!$cart) {
 
                 session(['cart' => $cart]);
 
-                return redirect()->back();
+               $totalProducts = $this->totalCartQuantityCount();
+               $totalPrice = $this->totalCartPriceCount();
+               $quantity = $cart[$product->id]['quantity'];
+               $price = $cart[$product->id]['price'];
+            
+                return response()->json(['status'=>'success', 'message'=>'Quantity increased', 'data' => ['totalProducts' => $totalProducts, 'totalPrice'=> $totalPrice, 'quantity'=>$quantity , 'price'=>$price]]);
+
             }else{
 
                 unset($cart[request()->product_id]);
@@ -190,7 +239,13 @@ if(!$cart) {
             $cart[$product->id]['total_price'] = $cart[$product->id]['quantity'] * $cart[$product->id]['price'];
 
             session(['cart' => $cart]);
-            return redirect()->back();
+
+            $totalProducts = $this->totalCartQuantityCount();
+            $totalPrice = $this->totalCartPriceCount();
+            $quantity = $cart[$product->id]['quantity'];
+            $price = $cart[$product->id]['price'];
+         
+             return response()->json(['status'=>'success', 'message'=>'Quantity increased', 'data' => ['totalProducts' => $totalProducts, 'totalPrice'=> $totalPrice, 'quantity'=>$quantity , 'price'=>$price]]);
 
         }else{
             return back();
@@ -244,14 +299,60 @@ if(!$cart) {
         return view('frontend.cart.checkout', $data);
     }
 
+           // =========================
+       // =   Buy now Checkout Page      =
+       // =========================
+
+       public function buy_now(Request $request, $id){
+        
+       
+        if(isset($id)){
+
+            $product = Product::find($id);
+            $total = ($product->sale_price !== null && $product->sale_price >0) ? $product->sale_price : $product->price;
+                
+        
+        }
+
+           $data=[];
+            $data['totalPrice'] = $total;
+            $data['totalProducts'] = 1;
+            $data['id'] = $id;
+            
+             
+        
+        return view('frontend.cart.checkout',$data);
+    }
+
+
+
+
+
        // =========================
        // =    Order logic        =
        // =========================
 
     public function orderProcess(Request $request){
 
-$cart = session('cart')? session('cart'):[];
-$total = array_sum(array_column($cart,'total_price'));
+
+$id = $request->id;
+
+
+if(isset($id)){
+
+    $product = Product::find($id);
+    $total = ($product->sale_price !== null && $product->sale_price >0) ? $product->sale_price : $product->price;
+        
+    $cart = [
+        'quantity' => 1,
+        'price' => $total,  
+        'total_price' => $total,
+    ];
+}else if(session('cart')){
+    $cart = session('cart')? session('cart'):[];
+    $total = array_sum(array_column($cart,'total_price'));  
+}
+
 
 if($total){
 
@@ -282,16 +383,35 @@ $order =  Order::create([
 
     ]);
 
-    foreach ($cart as $product_id => $product){
+    if(isset($id)){
+        
 
-        $order->orderProducts()->create([
-            'product_id' => $product_id,
-            'quantity'   => $product['quantity'],
-            'price'      => $product['total_price'],
-        ]);
+            $order->orderProducts()->create([
+                'product_id' => $id,
+                'quantity'   => $cart['quantity'],
+                'price'      => $cart['total_price'],
+            ]);
+        
+
+    }else{
+
+        foreach ($cart as $product_id => $product){
+
+            $order->orderProducts()->create([
+                'product_id' => $product_id,
+                'quantity'   => $product['quantity'],
+                'price'      => $product['total_price'],
+            ]);
+        }
     }
 
-    session()->forget('cart', 'total');
+ 
+if(isset($id)){
+
+
+}else if (session('cart')) {
+        session()->forget('cart', 'total');
+}
     $this->successMessage('Order Created');
     return redirect()->route('frontend.product.index');
 

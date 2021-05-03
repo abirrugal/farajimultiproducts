@@ -1,236 +1,447 @@
-<!doctype html>
-<html lang="{{ app()->getLocale() }}">
-    <head>
-      <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
 
-      <title>{{ config('app.name') }}</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Bootstrap Product List Carousel for Ecommerce Website</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<style>
+body {
+	font-family: "Open Sans", sans-serif;
+}
+h2 {
+	color: #000;
+	font-size: 26px;
+	font-weight: 300;
+	text-align: center;
+	text-transform: uppercase;
+	position: relative;
+	margin: 30px 0 80px;
+}
+h2 b {
+	color: #ffc000;
+}
+h2::after {
+	content: "";
+	width: 100px;
+	position: absolute;
+	margin: 0 auto;
+	height: 4px;
+	background: rgba(0, 0, 0, 0.2);
+	left: 0;
+	right: 0;
+	bottom: -20px;
+}
+.carousel {
+	margin: 50px auto;
+	padding: 0 70px;
+}
+.carousel .carousel-item {
+	min-height: 330px;
+	text-align: center;
+	overflow: hidden;
+}
+.carousel .carousel-item .img-box {
+	height: 160px;
+	width: 100%;
+	position: relative;
+}
+.carousel .carousel-item img {	
+	max-width: 100%;
+	max-height: 100%;
+	display: inline-block;
+	position: absolute;
+	bottom: 0;
+	margin: 0 auto;
+	left: 0;
+	right: 0;
+}
+.carousel .carousel-item h4 {
+	font-size: 18px;
+	margin: 10px 0;
+}
+.carousel .carousel-item .btn {
+	color: #333;
+	border-radius: 0;
+	font-size: 11px;
+	text-transform: uppercase;
+	font-weight: bold;
+	background: none;
+	border: 1px solid #ccc;
+	padding: 5px 10px;
+	margin-top: 5px;
+	line-height: 16px;
+}
+.carousel .carousel-item .btn:hover, .carousel .carousel-item .btn:focus {
+	color: #fff;
+	background: #000;
+	border-color: #000;
+	box-shadow: none;
+}
+.carousel .carousel-item .btn i {
+	font-size: 14px;
+	font-weight: bold;
+	margin-left: 5px;
+}
+.carousel .thumb-wrapper {
+	text-align: center;
+}
+.carousel .thumb-content {
+	padding: 15px;
+}
+.carousel-control-prev, .carousel-control-next {
+	height: 100px;
+	width: 40px;
+	background: none;
+	margin: auto 0;
+	background: rgba(0, 0, 0, 0.2);
+}
+.carousel-control-prev i, .carousel-control-next i {
+	font-size: 30px;
+	position: absolute;
+	top: 50%;
+	display: inline-block;
+	margin: -16px 0 0 0;
+	z-index: 5;
+	left: 0;
+	right: 0;
+	color: rgba(0, 0, 0, 0.8);
+	text-shadow: none;
+	font-weight: bold;
+}
+.carousel-control-prev i {
+	margin-left: -3px;
+}
+.carousel-control-next i {
+	margin-right: -3px;
+}
+.carousel .item-price {
+	font-size: 13px;
+	padding: 2px 0;
+}
+.carousel .item-price strike {
+	color: #999;
+	margin-right: 5px;
+}
+.carousel .item-price span {
+	color: #86bd57;
+	font-size: 110%;
+}	
+.carousel .carousel-indicators {
+	bottom: -50px;
+}
+.carousel-indicators li, .carousel-indicators li.active {
+	width: 10px;
+	height: 10px;
+	margin: 4px;
+	border-radius: 50%;
+	border-color: transparent;
+	border: none;
+}
+.carousel-indicators li {	
+	background: rgba(0, 0, 0, 0.2);
+}
+.carousel-indicators li.active {	
+	background: rgba(0, 0, 0, 0.6);
+}
+.star-rating li {
+	padding: 0;
+}
+.star-rating i {
+	font-size: 14px;
+	color: #ffc000;
+}
+</style>
 
-      <script src="{{ asset('js/app.js') }}" defer></script>
-
-      <!-- Fonts -->
-      <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
-
-      <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    </head>
-    <body>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-          <a class="navbar-brand" href="{{ route('post.index') }}">{{ config('app.name') }}</a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-          </button>
-
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="navbar-nav mr-auto">
-                  <li class="nav-item">
-                      <a class="nav-link" href="{{ route('post.index') }}">Home</a>
-                  </li>
-
-                  <li class="nav-item active">
-                      <a class="nav-link" href="{{ route('category.index') }}">Categories <span class="sr-only">(current)</span></a>
-                  </li>
-              </ul>
-
-              <ul class="navbar-nav ml-auto">
-                @guest
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                    </li>
-                @else
-                    <li class="nav-item">
-                        <a href="{{ route('post.create') }}" class="btn btn-success my-2 my-sm-0">Create Post</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            {{ Auth::user()->name }} <span class="caret"></span>
-                        </a>
-
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ route('logout') }}"
-                                onclick="event.preventDefault();
-                                                document.getElementById('logout-form').submit();">
-                                {{ __('Logout') }}
-                            </a>
-
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                @csrf
-                            </form>
-                        </div>
-                    </li>
-                @endguest
-            </ul>
-              
-          </div>
-      </nav>
-
-      @if (Session::has('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <h4 class="alert-heading">Success!</h4>
-                <p>{{ Session::get('success') }}</p>
-
-                <button type="button" class="close" data-dismiss="alert aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif
-
-        @if (Session::has('errors'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <h4 class="alert-heading">Error!</h4>
-                <p>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </p>
-
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif
-
-          <div class="container py-3">
-
-            <div class="modal" tabindex="-1" role="dialog" id="editCategoryModal">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title">Edit Category</h5>
-
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-
-                  <form action="" method="POST">
-                    @csrf
-                    @method('PUT')
-
-                    <div class="modal-body">
-                      <div class="form-group">
-                        <input type="text" name="name" class="form-control" value="" placeholder="Category Name" required>
-                      </div>
-                    </div>
-
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                      <button type="submit" class="btn btn-primary">Update</button>
-                    </div>
-                  </div>
-                  </form>
-              </div>
-            </div>
-
-          <div class="row">
-            <div class="col-md-8">
-
-              <div class="card">
-                <div class="card-header">
-                  <h3>Categories</h3>
-                </div>
-                <div class="card-body">
-                  <ul class="list-group">
-                    @foreach ($categories as $category)
-                      <li class="list-group-item">
-                        <div class="d-flex justify-content-between">
-                          {{ $category->name }}
-
-                          <div class="button-group d-flex">
-                            <button type="button" class="btn btn-sm btn-primary mr-1 edit-category" data-toggle="modal" data-target="#editCategoryModal" data-id="{{ $category->id }}" data-name="{{ $category->name }}">Edit</button>
-
-                            <form action="{{ route('category.destroy', $category->id) }}" method="POST">
-                              @csrf
-                              @method('DELETE')
-
-                              <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                            </form>
-                          </div>
-                        </div>
-
-                        @if ($category->children)
-                          <ul class="list-group mt-2">
-                            @foreach ($category->children as $child)
-                              <li class="list-group-item">
-                                <div class="d-flex justify-content-between">
-                                  {{ $child->name }}
-
-                                  <div class="button-group d-flex">
-                                    <button type="button" class="btn btn-sm btn-primary mr-1 edit-category" data-toggle="modal" data-target="#editCategoryModal" data-id="{{ $child->id }}" data-name="{{ $child->name }}">Edit</button>
-
-                                    <form action="{{ route('category.destroy', $child->id) }}" method="POST">
-                                      @csrf
-                                      @method('DELETE')
-
-                                      <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                    </form>
-                                  </div>
-                                </div>
-                              </li>
-                            @endforeach
-                          </ul>
-                        @endif
-                      </li>
-                    @endforeach
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-4">
-              <div class="card">
-                <div class="card-header">
-                  <h3>Create Category</h3>
-                </div>
-
-                <div class="card-body">
-                  <form action="{{ route('category.store') }}" method="POST">
-                    @csrf
-
-                    <div class="form-group">
-                      <select class="form-control" name="parent_id">
-                        <option value="">Select Parent Category</option>
-
-                        @foreach ($categories as $category)
-                          <option value="{{ $category->id }}">{{ $category->name }}</option>
-                        @endforeach
-                      </select>
-                    </div>
-
-                    <div class="form-group">
-                      <input type="text" name="name" class="form-control" value="{{ old('name') }}" placeholder="Category Name" required>
-                    </div>
-
-                    <div class="form-group">
-                      <button type="submit" class="btn btn-primary">Create</button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <script
-  src="https://code.jquery.com/jquery-3.4.1.min.js"
-  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-  crossorigin="anonymous"></script>
-
-        <script type="text/javascript">
-          $('.edit-category').on('click', function() {
-            var id = $(this).data('id');
-            var name = $(this).data('name');
-            var url = "{{ url('category') }}/" + id;
-
-            $('#editCategoryModal form').attr('action', url);
-            $('#editCategoryModal form input[name="name"]').val(name);
-          });
-        </script>
-    </body>
-</html>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<h2>Trending <b>Products</b></h2>
+			<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="0">
+			<!-- Carousel indicators -->
+			<ol class="carousel-indicators">
+				<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+				<li data-target="#myCarousel" data-slide-to="1"></li>
+				<li data-target="#myCarousel" data-slide-to="2"></li>
+			</ol>   
+			<!-- Wrapper for carousel items -->
+			<div class="carousel-inner">
+				<div class="carousel-item active">
+					<div class="row">
+						<div class="col-sm-3">
+							<div class="thumb-wrapper">
+								<div class="img-box">
+									<img src="/examples/images/products/ipad.jpg" class="img-fluid" alt="">
+								</div>
+								<div class="thumb-content">
+									<h4>Apple iPad</h4>
+									<p class="item-price"><strike>$400.00</strike> <span>$369.00</span></p>
+									<div class="star-rating">
+										<ul class="list-inline">
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star-o"></i></li>
+										</ul>
+									</div>
+									<a href="#" class="btn btn-primary">Add to Cart</a>
+								</div>						
+							</div>
+						</div>
+						<div class="col-sm-3">
+							<div class="thumb-wrapper">
+								<div class="img-box">
+									<img src="/examples/images/products/headphone.jpg" class="img-fluid" alt="">
+								</div>
+								<div class="thumb-content">
+									<h4>Sony Headphone</h4>
+									<p class="item-price"><strike>$25.00</strike> <span>$23.99</span></p>
+									<div class="star-rating">
+										<ul class="list-inline">
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star-o"></i></li>
+										</ul>
+									</div>
+									<a href="#" class="btn btn-primary">Add to Cart</a>
+								</div>						
+							</div>
+						</div>		
+						<div class="col-sm-3">
+							<div class="thumb-wrapper">
+								<div class="img-box">
+									<img src="/examples/images/products/macbook-air.jpg" class="img-fluid" alt="">
+								</div>
+								<div class="thumb-content">
+									<h4>Macbook Air</h4>
+									<p class="item-price"><strike>$899.00</strike> <span>$649.00</span></p>
+									<div class="star-rating">
+										<ul class="list-inline">
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star-half-o"></i></li>
+										</ul>
+									</div>
+									<a href="#" class="btn btn-primary">Add to Cart</a>
+								</div>						
+							</div>
+						</div>								
+						<div class="col-sm-3">
+							<div class="thumb-wrapper">
+								<div class="img-box">
+									<img src="/examples/images/products/nikon.jpg" class="img-fluid" alt="">
+								</div>
+								<div class="thumb-content">
+									<h4>Nikon DSLR</h4>
+									<p class="item-price"><strike>$315.00</strike> <span>$250.00</span></p>
+									<div class="star-rating">
+										<ul class="list-inline">
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star-o"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star-o"></i></li>
+										</ul>
+									</div>
+									<a href="#" class="btn btn-primary">Add to Cart</a>
+								</div>						
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="carousel-item">
+					<div class="row">
+						<div class="col-sm-3">
+							<div class="thumb-wrapper">
+								<div class="img-box">
+									<img src="/examples/images/products/play-station.jpg" class="img-fluid" alt="">
+								</div>
+								<div class="thumb-content">
+									<h4>Sony Play Station</h4>
+									<p class="item-price"><strike>$289.00</strike> <span>$269.00</span></p>
+									<div class="star-rating">
+										<ul class="list-inline">
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star-o"></i></li>
+										</ul>
+									</div>
+									<a href="#" class="btn btn-primary">Add to Cart</a>
+								</div>						
+							</div>
+						</div>
+						<div class="col-sm-3">
+							<div class="thumb-wrapper">
+								<div class="img-box">
+									<img src="/examples/images/products/macbook-pro.jpg" class="img-fluid" alt="">
+								</div>
+								<div class="thumb-content">
+									<h4>Macbook Pro</h4>
+									<p class="item-price"><strike>$1099.00</strike> <span>$869.00</span></p>
+									<div class="star-rating">
+										<ul class="list-inline">
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star-half-o"></i></li>
+										</ul>
+									</div>
+									<a href="#" class="btn btn-primary">Add to Cart</a>
+								</div>						
+							</div>
+						</div>
+						<div class="col-sm-3">
+							<div class="thumb-wrapper">
+								<div class="img-box">
+									<img src="/examples/images/products/speaker.jpg" class="img-fluid" alt="">
+								</div>
+								<div class="thumb-content">
+									<h4>Bose Speaker</h4>
+									<p class="item-price"><strike>$109.00</strike> <span>$99.00</span></p>
+									<div class="star-rating">
+										<ul class="list-inline">
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star-o"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star-o"></i></li>
+										</ul>
+									</div>
+									<a href="#" class="btn btn-primary">Add to Cart</a>
+								</div>						
+							</div>
+						</div>
+						<div class="col-sm-3">
+							<div class="thumb-wrapper">
+								<div class="img-box">
+									<img src="/examples/images/products/galaxy.jpg" class="img-fluid" alt="">
+								</div>
+								<div class="thumb-content">
+									<h4>Samsung Galaxy S8</h4>
+									<p class="item-price"><strike>$599.00</strike> <span>$569.00</span></p>
+									<div class="star-rating">
+										<ul class="list-inline">
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star-o"></i></li>
+										</ul>
+									</div>
+									<a href="#" class="btn btn-primary">Add to Cart</a>
+								</div>						
+							</div>
+						</div>						
+					</div>
+				</div>
+				<div class="carousel-item">
+					<div class="row">
+						<div class="col-sm-3">
+							<div class="thumb-wrapper">
+								<div class="img-box">
+									<img src="/examples/images/products/iphone.jpg" class="img-fluid" alt="">
+								</div>
+								<div class="thumb-content">
+									<h4>Apple iPhone</h4>
+									<p class="item-price"><strike>$369.00</strike> <span>$349.00</span></p>
+									<div class="star-rating">
+										<ul class="list-inline">
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star-o"></i></li>
+										</ul>
+									</div>
+									<a href="#" class="btn btn-primary">Add to Cart</a>
+								</div>						
+							</div>
+						</div>
+						<div class="col-sm-3">
+							<div class="thumb-wrapper">
+								<div class="img-box">
+									<img src="/examples/images/products/canon.jpg" class="img-fluid" alt="">
+								</div>
+								<div class="thumb-content">
+									<h4>Canon DSLR</h4>
+									<p class="item-price"><strike>$315.00</strike> <span>$250.00</span></p>
+									<div class="star-rating">
+										<ul class="list-inline">
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star-o"></i></li>
+										</ul>
+									</div>
+									<a href="#" class="btn btn-primary">Add to Cart</a>
+								</div>						
+							</div>
+						</div>
+						<div class="col-sm-3">
+							<div class="thumb-wrapper">
+								<div class="img-box">
+									<img src="/examples/images/products/pixel.jpg" class="img-fluid" alt="">
+								</div>
+								<div class="thumb-content">
+									<h4>Google Pixel</h4>
+									<p class="item-price"><strike>$450.00</strike> <span>$418.00</span></p>
+									<div class="star-rating">
+										<ul class="list-inline">
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star-o"></i></li>
+										</ul>
+									</div>
+									<a href="#" class="btn btn-primary">Add to Cart</a>
+								</div>						
+							</div>
+						</div>	
+						<div class="col-sm-3">
+							<div class="thumb-wrapper">
+								<div class="img-box">
+									<img src="/examples/images/products/watch.jpg" class="img-fluid" alt="">
+								</div>
+								<div class="thumb-content">
+									<h4>Apple Watch</h4>
+									<p class="item-price"><strike>$350.00</strike> <span>$330.00</span></p>
+									<div class="star-rating">
+										<ul class="list-inline">
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star"></i></li>
+											<li class="list-inline-item"><i class="fa fa-star-o"></i></li>
+										</ul>
+									</div>
+									<a href="#" class="btn btn-primary">Add to Cart</a>
+								</div>						
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Carousel controls -->
+			<a class="carousel-control-prev" href="#myCarousel" data-slide="prev">
+				<i class="fa fa-angle-left"></i>
+			</a>
+			<a class="carousel-control-next" href="#myCarousel" data-slide="next">
+				<i class="fa fa-angle-right"></i>
+			</a>
+		</div>
+		</div>
+	</div>
+</div>

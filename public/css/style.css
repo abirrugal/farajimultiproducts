@@ -178,7 +178,7 @@ aside .side-inner .nav-menu ul li a {
     padding-right: 30px;
     padding-top: 10px;
     padding-bottom: 10px;
-    color: #8b8b8b;
+    color: #111;
     position: relative;
     -webkit-transition: .3s padding-left ease;
     -o-transition: .3s padding-left ease;
@@ -233,7 +233,7 @@ aside .side-inner .nav-menu ul li .collapsible {
 }
 
 aside .side-inner .nav-menu ul li .collapsible:after {
-    content: "\e315";
+    content: "";
     font-size: 18px;
     font-family: 'icomoon';
     position: absolute;

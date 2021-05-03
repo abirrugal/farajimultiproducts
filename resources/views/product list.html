@@ -1,0 +1,106 @@
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-lg-2 d-lg-block">
+
+            <ul class="list-group py-3">
+                <div class="h6 border-top border-start border-end rounded p-3 text-center ">Category.</div>
+
+                @foreach ($child_categories as $child_category)
+
+
+                <li class="list-group-item "> <a class="text-decoration-none text-dark h6 mb-3" href="{{route('frontend.product.products_list',$child_category->slug)}}"> {{$child_category->name}} </a></li>
+
+
+                @endforeach
+
+            </ul>
+
+        </div>
+
+        <div class="col-lg-10 mt-3">
+
+
+            <div class="album py-1 bg-light">
+                <div class="container-fluid-md">
+
+                    <div class="card p-3 category_title text-center mb-3"> <span class="mb-2"> {{$sub_category->name}} </span>
+                        <div class="border-bottom mb-3"></div>
+
+
+                        <div class="row">
+
+                            @foreach ($child_categories as $child_category) @foreach($child_category->products as $product)
+
+                            <div class="border-bottom d-flex align-items-start">
+
+                                <div class="col-4 col-md-3 ">
+
+
+                                    <div class="d-none d-md-flex ">
+                                        <div class="w-75">
+                                            <a href="{{route('frontend.product.show',$product->slug)}}"> <img class=" img-fluid rounded product_img" src=" {{asset('allfiles/products_image').'/'.$product->image}}" alt="{{$product->slug}}"> </a>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="d-md-none mt-3">
+
+                                        <div class="w-100 ">
+                                            <a href="{{route('frontend.product.show',$product->slug)}}"> <img class=" img-fluid rounded product_img" src=" {{asset('allfiles/products_image').'/'.$product->image}}" alt="{{$product->slug}}"> </a>
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+
+                                <div class="col-8 col-md-9 ">
+
+
+                                    <div class="card-body">
+                                        <p class="card-text text-start"> <a class=" text-decoration-none product-title" href="{{route('frontend.product.show',$product->slug)}}"> {{$product->title}}  </a> </p>
+
+                                        <p class="price-title-home text-start mb-sm-3">
+
+                                            @if($product->sale_price !== null && $product->sale_price > 0) Price (BDT) :<strike> {{$product->price}}</strike> <br> BDT {{number_format($product->sale_price,2) }} @else Price (BDT) : {{number_format($product->price,2)}}
+                                            @endif
+                                        </p>
+                                        <div class="d-flex flex-row flex-wrap">
+
+                                            <form class="d-inline" data-route="{{route('cart.store')}}" id="add_cart" method="POST">
+                                                @csrf
+
+                                                <input type="hidden" name="product_id" value="{{$product->id}}">
+
+                                                <button class="btn btn-sm  add_to_cart mt-2  d-block " type="submit">Add to cart</button>
+                                            </form>
+                                            <button type="button" class=" btn btn-sm  buy_now mt-2 ms-2">Buy now</button>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            @endforeach @endforeach
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+</div>
+
+
+
+
+@endsection

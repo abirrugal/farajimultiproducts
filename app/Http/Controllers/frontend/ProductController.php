@@ -3,62 +3,121 @@
 namespace App\Http\Controllers\frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+// use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
 
 class ProductController extends Controller
 {
 
-//List of the all products to the index/home page
+
+
+//List of Categories to the home page
 
     public function productsIndex(){
-        $data['products'] = Product::select('id','title','slug','price','sale_price')->where('active', 1)->latest()->paginate(10);
-        return view('frontend\home', $data);
+
+        // $data['products'] = Product::where('brand','Xiomi')->get();
+        $data['categories'] = Category::with('products')->where('category_id',null)->whereNull('subcategory_id')->get();
+        return view('frontend\home',$data);
     }
 
 
-//Goto Create New Product's form
+  //List of products list
 
-    function productCreate(){
-
-    }
-
-
-//Store Product Info
-
-    function productStore(){
-
-    }
-
-//Show individual Product
-
-    public function productShow($slug){
-     $product = Product::where([['slug', '=', $slug],['active','=', 1]])->first();
+  public function productSub_list($slug){
     
-     if($product === null){
-         return redirect()->route('frontend.home');
-     }
+    $data['category'] = Category::where('slug', $slug)->first();
 
-     return view('frontend.products.show', ['product'=> $product]);
 
+    $child = [];
+
+
+    foreach ($data['category']->child_category as $subcategories) {
+
+    foreach ($subcategories->child as $childcat) {
+      foreach ($childcat->products as $product){
+
+        array_push($child, [
+          'title'=>$product->title,
+          'image'=>$product->image,
+          'price'=>$product->price,
+          'sale_price' => $product->sale_price,
+          'id' =>$product->id,          
+          'slug' =>$product->slug,
+      
+          ]);
+         
+      }
+      
+      
+    }
+  
     }
 
-//Goto Edit Form page
 
-    public function productEdit(){
+    
+    $data['products'] = $this->paginate($child,10,'',['path' => Paginator::resolveCurrentPath()]);
 
-    }
+    
+    return view('frontend.products.list',$data);
 
-//Update Product
+   }
 
-    public function productUpdate(){
+//Product show
 
-    }
+public function productList($slug){
 
-//Destroy Product
-    public function productDestroy(){
+ $data['sub_category'] = Category::where('slug', $slug)->first();
 
-    }
+ $child = [];
+
+ foreach ($data['sub_category']->child as $childcat) {
+  foreach ($childcat->products as $product){
+
+    array_push($child, [
+      'title'=>$product->title,
+      'image'=>$product->image,
+      'price'=>$product->price,
+      'sale_price' => $product->sale_price,
+      'id' =>$product->id,          
+      'slug' =>$product->slug,
+  
+      ]);
+     
+  }
+  
+  
+}
+
+$data['products'] = $this->paginate($child,10,'',['path' => Paginator::resolveCurrentPath()]);
+
+ $data['child_categories'] =  $data['sub_category']->child()->paginate(10);
+ return view('frontend.products.product_list',$data);
+}
+
+public function productListChild($slug){
+
+  $data['sub_category'] = Category::where('slug', $slug)->first();
+  $data['child_categories'] =  $data['sub_category']->paginate(10);
+  return view('frontend.products.product_list',$data);
+ }
 
 
+public function productShow($slug){
+  $data['product'] = Product::where('slug', $slug)->first();
+
+ //  dd($data['product']);
+  return view('frontend.products.show',$data);
+ }
+
+ public function paginate($items, $perPage = 5, $page = null, array $options = [])
+ {
+     $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+     $items = $items instanceof Collection ? $items : Collection::make($items);
+     return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
+ }
 }

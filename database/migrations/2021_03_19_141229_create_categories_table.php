@@ -21,6 +21,8 @@ class CreateCategoriesTable extends Migration
             $table->string('banner', 200)->nullable();
             $table->unsignedInteger('category_id')->nullable();
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->unsignedInteger('subcategory_id')->nullable();
+            $table->foreign('subcategory_id')->references('id')->on('categories')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -7,7 +7,9 @@
 @section('main')
 
 <div class="container my-4">
-<h3>{{$category->name}}</h3> 
+@section('title')
+{{$category->name}}
+@endsection
 
 <p class="btn-sm m-0">Created : {{$category->created_at}}</p>
 
@@ -28,6 +30,8 @@
 
 
 @endforeach
+
+
 
 
 @endif

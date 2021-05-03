@@ -24,6 +24,22 @@
     max-width: 40rem;
 }
 
+
+/* Products  */
+
+.product_img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.w-sm {
+    width: 90%;
+}
+
 footer {
     padding-top: 3rem;
     padding-bottom: 3rem;
@@ -38,6 +54,100 @@ footer p {
     bottom: 0;
 }
 
+.price-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: chocolate;
+}
+
+.price-title-home {
+    font-size: 1rem;
+    font-weight: bold;
+    color: chocolate;
+}
+
+.add_to_cart {
+    background: #f0c14b;
+    border-color: #a88734 #9c7e31 #846a29;
+    color: #0F1111;
+}
+
+.buy_now {
+    background: #ed9220;
+    border-color: #ca7c1b #be751a #a56616;
+    color: #0F1111;
+}
+
+
+/* Header menu  */
+
+.brand {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.bg-navi {
+    background-color: #203040;
+}
+
+
+/* Header Sub-menu  */
+
+.bd-subnavbar {
+    position: relative;
+    z-index: 1020;
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 5%), inset 0 -1px 0 rgb(0 0 0 / 15%);
+}
+
+.side_menu_title {
+    color: #000;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 14px;
+    padding-left: 5px;
+    white-space: nowrap;
+}
+
+
+/* Primary color */
+
+.menu_title {
+    /* padding-right: 20px;
+    padding-left: 36px; */
+    padding-top: 13px;
+    padding-bottom: 1px;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #111;
+    text-transform: capitalize;
+    display: inline-block;
+}
+
+.category_title {
+    padding-top: 13px;
+    padding-bottom: 1px;
+    font-size: 20px;
+    color: #0F1111!important;
+    font-weight: 700;
+    font-family: "Amazon Ember", Arial, sans-serif;
+    text-transform: capitalize;
+}
+
+.product-title {
+    font-size: 1.2rem!important;
+    line-height: 1.4!important;
+    font-weight: 700!important;
+    color: #0F1111!important;
+}
+
+html {
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+}
+
 
 /* Deshboard custom */
 
@@ -50,8 +160,137 @@ footer p {
     user-select: none;
 }
 
+
+/* Services */
+
+i.fa.fa-truck,
+.fa-apple-alt,
+.fa.fa-cart-arrow-down {
+    font-size: 40px;
+    color: #fff;
+    text-align: center;
+}
+
+.bg-violet {
+    background-color: #0d1128 !important;
+}
+
+.bg-blue {
+    background-color: #2E3094 !important;
+}
+
+.text-dim-white {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 16px;
+    line-height: 1.8;
+    font-weight: 400;
+}
+
+
+/* Main Title  */
+
+.main_heading {
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 36px;
+    box-sizing: border-box;
+    text-rendering: optimizeLegibility;
+    color: #0F1111;
+    -webkit-text-size-adjust: 100%;
+}
+
+.category-title-text {
+    font-size: 21px!important;
+    line-height: 27.3px!important;
+    padding-bottom: 0;
+    display: block;
+    margin-bottom: 8px!important;
+    font-weight: 700;
+    text-rendering: optimizeLegibility;
+    padding: 0;
+    margin: 0;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    color: #0F1111;
+}
+
+
+/* Sub title text  */
+
+.sub-title-text {
+    text-align: center;
+    font-size: 16px;
+    color: #666666;
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+    line-height: 20px;
+    margin: 15px 0 70px 0;
+}
+
+.footer_amazona {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    background-color: #232F3E;
+    min-width: 1000px;
+    position: relative;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.footer_sps {
+    width: 10%;
+    padding: 0 15px;
+}
+
+.scroll_v {
+    max-height: 400px;
+    overflow: auto;
+}
+
+
+/* Product container  */
+
+.product-container {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-gap: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+
+/* Hidden in small screen  */
+
 @media (min-width: 768px) {
     .bd-placeholder-img-lg {
         font-size: 3.5rem;
+    }
+}
+
+@media (max-width: 320px) {
+    .hidden {
+        display: none;
+    }
+    .btn-group-lg>.btn,
+    .btn-lg {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 500px) {
+    .btn-group-lg>.btn,
+    .btn-lg {
+        font-size: 1rem;
+    }
+    .price-title-home {
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: chocolate;
+    }
+    .product-title {
+        font-size: 0.8rem!important;
+        line-height: 1.1!important;
+        font-weight: 600!important;
+        color: #0F1111!important;
     }
 }

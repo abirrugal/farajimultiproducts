@@ -1,5 +1,10 @@
 @extends('backend.layouts.admin_layouts')
 
-@section('sidenav')
-    @include('backend.layouts.partials.side_menu')
+
+@section('title')
+    Create New Product.
+@endsection
+
+@section('main')
+
 @endsection

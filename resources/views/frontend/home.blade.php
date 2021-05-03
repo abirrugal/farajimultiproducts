@@ -4,66 +4,77 @@
 
 @section('main') 
 
-@include('frontend.partials.heading')
+
+<main>
 
 
-  <div class="album py-5 bg-light">
-    <div class="container">
+@include('frontend.partials.slider')
 
-      <div class="row">
-    
-        @foreach ($products as $product)
-              
-        <div class="col-md-4 col-lg-3">
-          <div class="card mb-4 shadow-sm">
+ 
 
-            <a href="{{route('frontend.product.show',$product->slug)}}" class="w-100"> <img class="img-thumbnail rounded w-100" src="{{$product->getFirstMediaUrl()}}" alt="{{$product->slug}}"/> </a>
+  <div class="album pb-5 pt-5 pt-lg-0 bg-light">
+    <div class="container-fluid">
+      @php 
+    $count = 0;
+      @endphp
+
+       
+      {{-- <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3"> --}}
+      <div class="product-container">
+
+        
+        
+@foreach ($categories as $category)
+       @php 
+        if($count == 10) break; $count++;
+        @endphp
+
+        <div class="colj">
+          <div class="card shadow-sm d-flex justify-content-center">
+
+            <p class="card-text "> <a class=" text-decoration-none menu_title d-flex justify-content-center align-items-center p-2 pt-3" href="{{route('frontend.product.sub_list',$category->slug)}}"> {{$category->name}}  </a> </p>
+
+
+            <div class="d-flex justify-content-center align-items-center">
+        <div class="w-sm">
+            <a href="{{route('frontend.product.sub_list',$category->slug)}}"> <img class=" img-fluid rounded product_img" src=" {{asset('allfiles/category_image').'/'.$category->banner}}" alt="{{$category->slug}}"> </a>
+
+        </div>
+          </div>
 
             <div class="card-body">
 
-              <p class="card-text"> <a href="{{route('frontend.product.show',$product->slug)}}">{{$product->title}}</a> </p>
-          
+            
               <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-
-                 <form data-route="{{route('cart.store')}}" id="add_cart" method="POST" >
-                  @csrf
-                  
-                  <input type="hidden" name="product_id" value="{{$product->id}}">
-                  <button class="btn  btn-outline-primary" type="submit">Add to cart</button>                  
-                  </form>
-                 
-                  {{-- <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button> --}}
-                </div>
-
-
-                
-                <div class="text-muted home-price">
-                  @if($product->sale_price !== null &&  $product->sale_price > 0)
-              BDT <strike>{{$product->price}}</strike> <br> BDT {{$product->sale_price}}
-                  @else
-                  BDT {{$product->price}}
-                 @endif
-                </div>
-                
-           
+                <div class="">
                
+                 <a href="{{route('frontend.product.sub_list',$category->slug)}}"><button type="button" class=" btn btn-sm btn-outline-secondary">Shop now</button></a> 
+            
+                </div>
+
+                {{-- <button type="button" class="d-sm-none btn btn-sm btn-outline-secondary">Buy now</button> --}}
+
               </div>
             </div>
           </div>
         </div>
 
-        
-        @endforeach
+      @endforeach
 
       </div>
-      <div class="d-flex justify-content-center align-items-center border  border-primary pt-3 bg-secondary">
-      {{$products->links()}}
-      </div>
+
     </div>
   </div>
+
+</main>
+
+
+
   @endsection
 
 @section('before_body')
+
+
+
 
 @endsection

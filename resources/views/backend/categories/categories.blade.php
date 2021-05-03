@@ -6,10 +6,15 @@
 
 @section('main')
 
-<ul class="nav nav-tabs my-4">
  
-      <li class="nav-item">
-        <a class="nav-link active" href="#">Categories List</a>
+  @section('title')
+    Categories List
+  @endsection
+    
+  <ul class="nav nav-tabs my-4">
+
+      <li class="nav-item ">
+        <a class="nav-link active" href="#">Category List</a>
       </li>
 
       <li class="nav-item">
@@ -19,7 +24,7 @@
   </ul>
     
 <div class="well">
-    <h3 class="mb-3">Category List</h3>
+    <h3 class="my-4">Category List</h3>
     <p>
     <a class="btn btn-success" href="{{route('admin.category.new')}}">Add Category</a>
     
@@ -29,10 +34,10 @@
     
     <thead>
     <tr>
-    <th>Id</th>
-    <th>Category</th>
-    <th>Slug</th>
-    <th>Action</th>
+    <th class="h5 p-3">Id</th>
+    <th class="h5 p-3">Category Name</th>
+    <th class="h5 p-3">Slug</th>
+    <th class="h5 p-3">Action</th>
     </tr>
     </thead>
     
@@ -41,13 +46,13 @@
     
     @foreach($allcategories as $category)
     <tr>
-    <td>{{$category->id}}</td>
-    <td>{{$category->name}}</td>
-    <td>{{$category->slug}}</td>
+    <td class="h6">{{$category->id}}</td>
+    <td class="h5">{{$category->name}}</td>
+    <td class="h6">{{$category->slug}}</td>
 
-    <td>
-        <a  href="{{route('admin.category.show', $category->id)}}" class="mt-2 btn btn-info text-white mr-3">Details</a>
-        <a  href="{{route('admin.category.edit', $category->id)}}" class="mt-2 btn btn-warning mr-3">Edit</a>
+    <td class="d-flex justify-content-center align-items-center">
+        <a  href="{{route('admin.category.show', $category->id)}}" class="mt-2 btn btn-info text-white me-3">Details</a>
+        <a  href="{{route('admin.category.edit', $category->id)}}" class="mt-2 btn btn-warning me-3">Edit</a>
       <form class="d-inline "  action="{{route('admin.category.delete', $category->id)}}" method="POST">
       @csrf
       @method('Delete')

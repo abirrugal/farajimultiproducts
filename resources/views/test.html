@@ -1,133 +1,77 @@
-@extends('frontend.layouts.master') @section('main')
+<main>
 
 
 
+    <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+            <div class="col-lg-6 col-md-8 mx-auto">
+                <h1 class="fw-light">Album example</h1>
+                <p class="lead text-muted">Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it entirely.</p>
+                <p>
+                    <a href="#" class="btn btn-primary my-2">Main call to action</a>
+                    <a href="#" class="btn btn-secondary my-2">Secondary action</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="album py-5 bg-light">
+        <div class="container-fluid">
+            @php $count = 0; @endphp @foreach ($categories as $category)
+
+            <div class="category-title-text card  p-2"> {{$category->name}}</div>
+
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
 
 
 
-<div class="container-fluid">
-    <div class="row">
+                @foreach ($category->products as $product) @php if($count == 4) break; $count++; @endphp
 
+                <div class="col">
+                    <div class="card shadow-sm d-flex justify-content-center">
+                        <div class="d-flex justify-content-center">
+                            <div class="w-75">
+                                <a href="{{route('frontend.product.show',$product->slug)}}"> <img class=" img-fluid rounded product_img" src=" {{asset('allfiles/products_image').'/'.$product->image}}" alt="{{$product->slug}}"> </a>
 
-        <div class="col-md-8 mb-4 p-0 p-sm-2 pr-md-2"> {{-- This is main division it divided into two section this is 1st section--}}
+                            </div>
+                        </div>
 
-            <h4 class="d-flex flex-wrap justify-content-between align-items-center rounded mt-3 bg-dark text-white p-3">
-                <span class="text-white">Shopping Cart</span>
+                        <div class="card-body">
+                            <p class="card-text"> <a class="text-text text-decoration-none" href="{{route('frontend.product.show',$product->slug)}}"> {{$product->title}}  </a> </p>
 
-                <span class="badge badge-secondary badge-pill mr-3">{{count($cart)}}</span>
-            </h4>
+                            <p class="card-text h6 mb-3">
 
+                                @if($product->sale_price !== null && $product->sale_price > 0) Price (BDT) :<strike> {{$product->price}}</strike> <br> BDT {{$product->sale_price}} @else Price (BDT) : {{$product->price}} @endif
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="">
+                                    <form class="d-inline" data-route="{{route('cart.store')}}" id="add_cart" method="POST">
+                                        @csrf
 
-            <ul class="list-group mb-3">
+                                        <input type="hidden" name="product_id" value="{{$product->id}}">
 
-                @foreach($cart as $product)
-                <li class="list-group-item lh-condensed pt-3">
-
-                    <div class="row"> {{-- This is --}} {{--
-                        <div class="col-12 ">
-
-                            <div class="row "> --}}
-
-                                <div class="col-3 col-sm-3">
-                                    <img class="img-fluid " height="250px " src="https://m.media-amazon.com/images/I/71ryBVQqy5L._AC_AA180_.jpg" alt="" />
+                                        <button class="btn btn-sm btn-outline-secondary" type="submit">Add to cart</button>
+                                    </form>
+                                    <button type="button" class=" btn btn-sm btn-outline-secondary">Buy now</button>
 
                                 </div>
 
-                                <div class="col-9 col-sm-6">
-                                    {{--
-                                    <p class="text-description">Quantity : {{$product['quantity']}}</p> --}}
-                                    <div class=" cart-title"> {{$product['title']}}</div>
-                                    <strong class="  d-sm-none justify-content-end ">Price : {{$product['price']}}</strong>
-                                    <div class=""> In Stock</div>
+                                {{-- <button type="button" class="d-sm-none btn btn-sm btn-outline-secondary">Buy now</button> --}}
 
-
-
-                                    <div class="mb-2"> Quantity:</div> <input class="form-control w-50 mb-2" type="text" value="{{$product['quantity']}}" />
-                                    <button class="btn btn-sm btn-outline-secondary">Delete</button>
-
-
-
-                                </div>
-
-                                <div class="col-sm-3">
-                                    <strong class=" d-none  d-sm-flex justify-content-end mt-1">Price : ৳ {{$product['price']}}</strong>
-
-                                </div>
-
-
-                                {{-- </div>
-
-                        </div> --}}
-
-
-
-
-
-
-
+                            </div>
+                        </div>
                     </div>
-
-
-
-
-                </li>
-
-
+                </div>
                 @endforeach
 
 
 
+
+
+
+            </div>
+            @endforeach
         </div>
-
-
-
-
-        <div class="col-md-4 pl-md-2"> {{-- This is main division it divided into two section, This is 2nd --}}
-
-            <ul class="list-group mt-4 ">
-                {{--
-                <li class="list-group-item active">
-
-                    Checkout
-
-                </li> --}}
-                <li class="list-group-item d-flex justify-content-between bg-light">
-
-                    <div class="text-success">
-                        <h5 class="my-0">Promo code</h5>
-                        <small>EXAMPLECODE</small>
-                    </div>
-                    <span class="text-success">-$5</span>
-
-                </li>
-                <li class="list-group-item d-flex justify-content-between bg-light">
-
-                    <span class="h5 pt-1">Subtotal:</span>
-                    <strong class="h5 font-weight-bold pt-1">৳ {{$count}}</strong>
-
-                </li>
-                <li class="list-group-item ">
-
-                    <button class="btn btn-lg btn-block btn-success"> Proceed to checkout </button>
-
-                </li>
-
-
-            </ul>
-            <form class="card p-2">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Promo code">
-                    <div class="input-group-append">
-                        <button type="submit" class="btn btn-secondary">Redeem</button>
-                    </div>
-                </div>
-            </form>
-
-        </div>
-
     </div>
 
-</div>
-
-
-@endsection
+</main>

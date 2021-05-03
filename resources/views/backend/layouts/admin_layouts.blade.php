@@ -5,65 +5,71 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.80.0">
     <title>Dashboard Template · Bootstrap v4.6</title>
 
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
 
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-    </style>
     
     <!-- Custom styles for this template -->
     <link href="{{asset('css/all.css')}}" rel="stylesheet">
-    <link href="{{asset('css/dashboard.css')}}" rel="stylesheet">
+    <link href="{{asset('css/admin/admin.css')}}" rel="stylesheet">
+    <link href="{{asset('css/admin/mdb.min.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="{{asset('css/bootstrap5.css?v=').time()}}">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" />
+
+
+    {{-- Custom Js  --}}
+    <script src="{{asset('js/app.js')}}"></script>
+    <script src="{{asset('js/bootstrap5.js')}}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+  <script src="https://cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
+
+
   </head>
   <body>
-    
+    <header>
 @include('backend.layouts.partials.header')
 
-<div class="container-fluid">
-  <div class="row">
+    </header>
     
-
-    @yield('sidenav')
     
-<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-  <div class="container">
-    @if (session('message'))
-  <div class="alert alert-{{session('type')}} mt-3">{{session('message')}}</div>
-@endif
-  </div>
-    @yield('main')
+<main style="margin-top: 58px">
+<div class="container-fluid px-1 px-sm-2 pt-4">
+  <section class="mb-4">
+    <div class="px-sm-3">
+      <div class="card-header py-3">
+        <h5 class="mb-0 text-center"><strong>
+      @yield('title')
+        </strong></h5>
+      </div>
+      <div class="">
 
-  </main>
+        @if (session('message'))
+            <div class="alert alert-{{session('type')}}">
+              {{session('message')}}
+            </div>
+        @endif
 
+      @yield('main')
+
+    </div>
   </div>
+</section>
 </div>
+</main>
 
-<script src="{{asset('js/all.js')}}"></script>
-      <script>window.jQuery || document.write('<script src="/docs/4.6/assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="/docs/4.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+  
 
-      
-        <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
-        
-        <script src="{{asset('js/dashboard.js')}}"></script>
-        <script src="{{asset('js/feather.js')}}"></script>
-        <script src="{{asset('js/chart.js')}}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{asset('js/admin/admin.js')}}"></script>
+<script src="{{asset('js/admin/mdb.min.js')}}"></script>   
 
-        @yield('before_body')
+
+@yield('before_body')
   </body>
 </html>
