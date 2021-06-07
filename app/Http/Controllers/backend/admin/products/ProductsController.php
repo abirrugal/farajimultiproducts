@@ -1,14 +1,12 @@
 <?php
-
 namespace App\Http\Controllers\backend\admin\products;
-
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-
+use Cloudinary;
 class ProductsController extends Controller
 {
 
@@ -27,9 +25,7 @@ class ProductsController extends Controller
         return view('backend.products.new');
 
     }
-
 //Store Products
-
     public function productsStore(Request $request){
 
         $validator = Validator::make($request->all(), [
@@ -43,7 +39,6 @@ class ProductsController extends Controller
             
         ]);
 
-
         if($validator->fails()){
             return redirect()->back()->withErrors($validator)->withInput();
         }
@@ -52,24 +47,26 @@ class ProductsController extends Controller
             if($request->file('image')->isValid()){
 
                 $image = $request->file('image');
+                // $file_name = Str::random(12);
+                // $file_extension = $image->getClientOriginalExtension();
+                // $img_name = $file_name . '.' . $file_extension;
+                // $image->storeAs('products_image', $img_name);
 
-                $file_name = Str::random(12);
-                $file_extension = $image->getClientOriginalExtension();
-                $img_name = $file_name . '.' . $file_extension;
-
-                $image->storeAs('products_image', $img_name);
+                $resizedImage = cloudinary()->upload($request->file('image')->getRealPath(), [
+                    'folder' => 'products',
+                 
+        ])->getSecurePath();    
 
             }
         }
 
-        if($request->child_category!==null || $request->child_category!==""){
+        if($request->child_category!==null && $request->child_category!==""){
+            
             $category_id = $request->child_category;
             
-        }else{
-
+        }else{         
             $category_id = ($request->sub_category)? $request->sub_category : $request->category;
         }
-
 
 try {
     Product::create([
@@ -77,7 +74,7 @@ try {
         'category_id' => $category_id,
         'title'       => $request->title,
         'description'   => $request->description,
-        'image'         => $img_name,
+        'image'         => $resizedImage,
         'in_stock'  =>$request->stock_status,
         'price'         =>$request->price,
         'sale_price'    =>$request->sprice,
@@ -95,7 +92,6 @@ try {
     }
 
 //Show Product
-
     public function productsShow($id){
 
         $product = Product::findOrFail($id);
@@ -113,10 +109,6 @@ try {
 //Update Products
 
     public function productsUpdate(Request $request, $id){
-
-
-
-
         $validator = Validator::make($request->all(), [
 
             'title' => 'required|min:2',
@@ -127,8 +119,6 @@ try {
             'category'  => 'required',           
             
         ]);
-
-
         if($validator->fails()){
             return redirect()->back()->withErrors($validator)->withInput();
         }
@@ -140,22 +130,29 @@ try {
 
                 $image = $request->file('image');
 
-                $file_name = Str::random(12);
-                $file_extension = $image->getClientOriginalExtension();
-                $img_name = $file_name . '.' . $file_extension;
+            //     $file_name = Str::random(12);
+            //     $file_extension = $image->getClientOriginalExtension();
+            //     $img_name = $file_name . '.' . $file_extension;
 
-                $image->storeAs('products_image', $img_name);
+            //     $image->storeAs('products_image', $img_name);
 
-               unlink(public_path().'/allfiles/products_image/'.$product->image);
-               $product->image = $img_name;
+            //    unlink(public_path().'/allfiles/products_image/'.$product->image);
+
+            $url = $product->image;
+            preg_match("/products\/(?:v\d+\/)?([^\.]+)/", $url, $matches);
+            Cloudinary::destroy($matches[0]);
+            $resizedImage = cloudinary()->upload($request->file('image')->getRealPath(), [
+                'folder' => 'products',
+            
+    ])->getSecurePath();  
+
+               $product->image = $resizedImage;
                $product->save();
                
-
-
             }
         }
 
-        if($request->child_category!==null || $request->child_category!==""){
+        if($request->child_category!==null && $request->child_category!==""){
             $category_id = $request->child_category;
             $product->category_id = $category_id;
             $product->save();
@@ -166,9 +163,6 @@ try {
             $product->category_id = $category_id;
             $product->save();
         }
-
-
-
 try {
     Product::find($id)->update([
 
@@ -190,7 +184,6 @@ try {
    $this->successMessage("Product successfully updated");
    return redirect()->back();
         
-
     }
 
 //Delete Products
@@ -198,18 +191,18 @@ try {
     public function productsDelete($id){
 
         $product = Product::find($id);
+        $url = $product->image;
+        preg_match("/products\/(?:v\d+\/)?([^\.]+)/", $url, $matches);
+        Cloudinary::destroy($matches[0]);
 
         $product->delete();
 
-        if($product->image){
-            unlink(public_path().'/allfiles/products_image/'.$product->image);   
-        }
+        // if($product->image){
+        //     unlink(public_path().'/allfiles/products_image/'.$product->image);   
+        // }
 
         session()->flash('type','success');
         session()->flash('message','Product successfully deleted');
         return redirect()->back();
     }
-
-
-
 }

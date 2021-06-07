@@ -1,14 +1,13 @@
 <?php
-
 namespace App\Http\Controllers\backend\admin\categories;
-
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-
+use Intervention\Image\Facades\Image;
+use Cloudinary;
 class SubCategoriesController extends Controller
 {
     
@@ -33,7 +32,7 @@ public function storesubCategories(Request $request){
     $validator = Validator::make($request->all(),[
         'category_id' => 'required|numeric',
         'sub_category' => 'required|min:1',
-        'sub_img'   => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5000'
+        // 'sub_img'   => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5000'
 
     ]);
 
@@ -48,14 +47,25 @@ public function storesubCategories(Request $request){
 
             $sub_img = $request->file('sub_img');
 
-           $imageName= $sub_img->getClientOriginalName().random_int(2,4).'.'.$sub_img->getClientOriginalExtension();
-           $sub_img->storeAs('sub_category_image', $imageName);
+            $resizedImage = cloudinary()->upload($sub_img->getRealPath(), [
+                'folder' => 'sub_cat',
+                'transformation' => [
+                          'width' => 379,
+                          'height' => 304
+                 ]
+    ])->getSecurePath();   
+
+        //    $imageName= $sub_img->getClientOriginalName().random_int(2,4).'.'.$sub_img->getClientOriginalExtension();
+        //    $image_resize = Image::make($sub_img->getRealPath());
+        //    $image_resize->resize(379,304);
+        //    $image_resize->save(public_path('allfiles/sub_category_image/'.$imageName));
+        //    $sub_img->storeAs('sub_category_image', $imageName);
         }
 
         Category::create([
             'category_id' => $request->category_id,
             'name' => trim( $request->sub_category),
-            'banner' => $imageName
+            'banner' => $resizedImage
 
         ]);
     } catch (Exception $e) {
@@ -101,15 +111,32 @@ try {
     if($request->hasFile('sub_img') && $request->file('sub_img')->isValid()){
     
         $sub_img = $request->file('sub_img');
-    
-        $imageName= $sub_img->getClientOriginalName().Str::random(5).'.'.$sub_img->getClientOriginalExtension();
-        $sub_img->storeAs('sub_category_image', $imageName);
+
+        // $imageName= $sub_img->getClientOriginalName().random_int(2,4).'.'.$sub_img->getClientOriginalExtension();
+        // $image_resize = Image::make($sub_img->getRealPath());
+        // $image_resize->resize(379,304);
+        // $image_resize->save(public_path('allfiles/sub_category_image/'.$imageName));
     
         $sub_category = Category::find($id);
-        if($sub_category->banner !==null){
-            unlink(public_path().'/allfiles/sub_category_image/'.$sub_category->banner);
+        // if($sub_category->banner !==null){
+        //     unlink(public_path().'/allfiles/sub_category_image/'.$sub_category->banner);
+        // }
+
+        $url = $sub_category->banner;
+        preg_match("/sub_cat\/(?:v\d+\/)?([^\.]+)/", $url, $matches);
+        if($matches !== null){
+
+        Cloudinary::destroy($matches[0]);
         }
-        $sub_category->banner = $imageName;
+        $resizedImage = cloudinary()->upload($sub_img->getRealPath(), [
+            'folder' => 'sub_cat',
+            'transformation' => [
+                      'width' => 379,
+                      'height' => 304
+             ]
+])->getSecurePath();   
+
+        $sub_category->banner = $resizedImage;
         $sub_category->save();
         
     }
@@ -133,11 +160,19 @@ redirect()->back()->with('message', $e);
 public function subCategoryDelete(Request $request , $id){
 
 $subcategory = Category::find($id);
+$url = $subcategory->banner;
+preg_match("/sub_cat\/(?:v\d+\/)?([^\.]+)/", $url, $matches);
 
+// $subcategory->delete();
+// if($subcategory->banner!==null){
+// unlink(public_path().'/allfiles/sub_category_image/'.$subcategory->banner);
+// }
 $subcategory->delete();
-if($subcategory->banner!==null){
-unlink(public_path().'/allfiles/sub_category_image/'.$subcategory->banner);
+if($matches !== null){
+
+Cloudinary::destroy($matches[0]);
 }
+
 session()->flash('type','success');
 session()->flash('message','SubCategory deleted success');
 return redirect()->back();

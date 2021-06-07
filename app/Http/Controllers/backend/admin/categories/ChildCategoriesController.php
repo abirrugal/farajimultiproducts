@@ -8,10 +8,10 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-
+use Intervention\Image\Facades\Image;
+use Cloudinary;
 class ChildCategoriesController extends Controller
-{
-    
+{  
 //childCategories child
 
 public function childCategories(){
@@ -32,7 +32,7 @@ public function storeChildCategories(Request $request){
     $validator = Validator::make($request->all(),[
         'subcategory_id' => 'required|numeric',
         'child_category' => 'required|min:1',
-        'child_img'   => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5000'
+        // 'child_img'   => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5000'
 
     ]);
 
@@ -46,14 +46,28 @@ public function storeChildCategories(Request $request){
 
             $child_img = $request->file('child_img');
 
-           $imageName= $child_img->getClientOriginalName().random_int(2,4).'.'.$child_img->getClientOriginalExtension();
-           $child_img->storeAs('child_category_image', $imageName);
+        //    $imageName= $child_img->getClientOriginalName().random_int(2,4).'.'.$child_img->getClientOriginalExtension();
+
+        //    $image_resize = Image::make($child_img->getRealPath());
+        //    $image_resize->resize(379,304);
+        //    $image_resize->save(public_path('allfiles/child_category_image/'.$imageName));
+
+        //    $child_img->storeAs('child_category_image', $imageName);
+
+
+        $resizedImage = cloudinary()->upload($child_img->getRealPath(), [
+            'folder' => 'child_cat',
+            'transformation' => [
+                      'width' => 379,
+                      'height' => 304
+             ]
+])->getSecurePath();      
         }
 
         Category::create([
             'subcategory_id' => $request->subcategory_id,
             'name' => trim( $request->child_category),
-            'banner' => $imageName
+            'banner' => $resizedImage
         ]);
     } catch (Exception $e) {
         $this->errorMessage($e->getMessage());
@@ -100,21 +114,42 @@ try {
     if($request->hasFile('child_img') && $request->file('child_img')->isValid()){
 
         $child_img = $request->file('child_img');
+
+        //    $imageName= $child_img->getClientOriginalName().random_int(2,4).'.'.$child_img->getClientOriginalExtension();
+
+        //    $image_resize = Image::make($child_img->getRealPath());
+        //    $image_resize->resize(379,304);
+        //    $image_resize->save(public_path('allfiles/child_category_image/'.$imageName));
+
     
-        $imageName= $child_img->getClientOriginalName().random_int(2,4).'.'.$child_img->getClientOriginalExtension();
-        $child_img->storeAs('child_category_image', $imageName);
-    
-        $category = Category::find($id);
-        if($category->banner!==null){
-        unlink(public_path().'/allfiles/child_category_image/'.$category->banner);
+        $childcategory = Category::find($id);
+
+        // if($childcategory->banner!==null && $childcategory->banner!==''){
+        // unlink(public_path().'/allfiles/child_category_image/'.$childcategory->banner);
+        // }
+
+        $url = $childcategory->banner;
+        preg_match("/child_cat\/(?:v\d+\/)?([^\.]+)/", $url, $matches);
+        if($matches !== null){
+
+        Cloudinary::destroy($matches[0]);
         }
-        $category->banner = $imageName;
-        $category->save();
+        $resizedImage = cloudinary()->upload($child_img->getRealPath(), [
+            'folder' => 'child_cat',
+            'transformation' => [
+                      'width' => 379,
+                      'height' => 304
+             ]
+])->getSecurePath();  
+
+        $childcategory->banner = $resizedImage;
+        $childcategory->save();
     
     }
 
     if($request->subcategory_id !=='no_id'){
-        $category->subcategory_id = $request->subcategory_id;
+        $childcategory->subcategory_id = $request->subcategory_id;
+        $childcategory->save();
 
     }
 
@@ -137,16 +172,23 @@ redirect()->back()->with('message', $e);
 public function childCategoryDelete(Request $request , $id){
 
 $childcategory = Category::find($id);
-if($childcategory->banner!==null){
-$childcategory->delete();
+
+$url = $childcategory->banner;
+preg_match("/child_cat\/(?:v\d+\/)?([^\.]+)/", $url, $matches);
+if($matches !== null){
+
+Cloudinary::destroy($matches[0]);
 }
-unlink(public_path().'/allfiles/child_category_image/'.$childcategory->banner);
-
-
+$childcategory->delete();
+// if($childcategory->banner!==null){
+// $childcategory->delete();
+// }
+// if($childcategory->banner!==null && $childcategory->banner!==''){
+// unlink(public_path().'/allfiles/child_category_image/'.$childcategory->banner);
+// }
 session()->flash('type','success');
 session()->flash('message','SubCategory deleted success');
 return redirect()->back();
-
 }
 
 }

@@ -40,7 +40,7 @@ $(function() {
 
 
             $.ajax({
-                type: 'Post',
+                method: 'POST',
                 url: $('#add_cart').data('route'),
                 data: { product_id: data, quantity_show: data1 },
                 cache: false,
@@ -110,7 +110,6 @@ $(function() {
                         change_to: change_to
                     }
                 }).done(function(data) {
-
 
 
                     if (data.status === 'success') {

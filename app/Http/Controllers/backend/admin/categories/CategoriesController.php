@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
-
+use Cloudinary;
 
 class CategoriesController extends Controller
 {
@@ -45,19 +45,28 @@ class CategoriesController extends Controller
 
                 $image = $request->file('image');
 
-               $imageName= $image->getClientOriginalName();
+                // $imageName= $image->getClientOriginalName().random_int(2,4).'.'.$image->getClientOriginalExtension();
 
-               $image_resize = Image::make($image->getRealPath());
-               $image_resize->resize(379,304);
-               $image_resize->save(public_path('images/'.$imageName));
+            //    $image_resize = Image::make($image->getRealPath());
+            //    $image_resize->resize(379,304);
+            //    dd($image_resize);
                
+            $resizedImage = cloudinary()->upload($image->getRealPath(), [
+                'folder' => 'categories',
+                'transformation' => [
+                          'width' => 379,
+                          'height' => 304
+                 ]
+    ])->getSecurePath();      
+    
+                 
             //    $image->storeAs('category_image', $imageName);
             }
 
             Category::create([
             
                 'name' => trim( $request->category),
-                'banner' => $imageName
+                'banner' => $resizedImage
             ]);
         } catch (Exception $e) {
             $this->errorMessage($e->getMessage());
@@ -103,15 +112,34 @@ try {
     if($request->hasFile('image') && $request->file('image')->isValid()){
     
         $image = $request->file('image');
-    
-        $imageName= $image->getClientOriginalName().Str::random(5).'.'.$image->getClientOriginalExtension();
-        $image->storeAs('category_image', $imageName);
+
+
+    //     $imageName= $image->getClientOriginalName().random_int(2,4).'.'.$image->getClientOriginalExtension();
+
+    //    $image_resize = Image::make($image->getRealPath());
+    //    $image_resize->resize(379,304);
+    //    $image_resize->save(public_path('allfiles/category_image/'.$imageName));
     
         $category = Category::find($id);
-        if($category->banner !==null){
-            unlink(public_path().'/allfiles/category_image/'.$category->banner);
+        // if($category->banner !==null){
+        //     unlink(public_path().'/allfiles/category_image/'.$category->banner);
+        // }
+
+        $url = $category->banner;
+        preg_match("/categories\/(?:v\d+\/)?([^\.]+)/", $url, $matches);
+        if($matches !== null){
+
+        Cloudinary::destroy($matches[0]);
         }
-        $category->banner = $imageName;
+        $resizedImage = cloudinary()->upload($image->getRealPath(), [
+            'folder' => 'categories',
+            'transformation' => [
+                      'width' => 379,
+                      'height' => 304
+             ]
+])->getSecurePath();   
+
+        $category->banner = $resizedImage;
         $category->save();
     
     }
@@ -125,23 +153,27 @@ try {
 } catch (Exception $e) {
     redirect()->back()->with('message', $e);
 }
-
-
 }
-
-
-
 
     //Delete Category
 
 public function categoryDelete($id){
     
    $category = Category::find($id);
+   $url = $category->banner;
+   preg_match("/categories\/(?:v\d+\/)?([^\.]+)/", $url, $matches);
 
-   $category->delete();
-   if(isset($category->banner)){
-   unlink(public_path().'/allfiles/category_image/'.$category->banner);
-  }
+//    $category->delete();
+//    if($category->banner!==null && $category->banner!==''){
+//    unlink(public_path().'/allfiles/category_image/'.$category->banner);
+//   }
+
+$category->delete();
+if($matches !== null){
+Cloudinary::destroy($matches[0]);
+}
+// preg_match("/uploads\/(?:v\d+\/)?([^\.]+)/", $url, $matches);
+
    session()->flash('type','success');
    session()->flash('message','Category successfully deleted');
    return redirect()->back();
